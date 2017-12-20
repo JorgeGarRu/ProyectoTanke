@@ -1132,7 +1132,7 @@ GameObject:
   - component: {fileID: 65711754247490924}
   - component: {fileID: 65888594145248378}
   - component: {fileID: 54430568295795040}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: TanqueJugador2
   m_TagString: Jugador2
   m_Icon: {fileID: 0}
@@ -2130,7 +2130,7 @@ Camera:
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.5
+    x: 0
     y: 0
     width: 1
     height: 1

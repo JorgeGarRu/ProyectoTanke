@@ -4,13 +4,41 @@ using UnityEngine;
 
 public class InstanciarJugadores : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+    public GameObject jugador;
+    GameObject[] jugadores = new GameObject[4];
+    public Transform spawnJugador1;
+    public Transform spawnJugador2;
+
+    public int NumeroJugadores;
 	
-	// Update is called once per frame
+	void Start () {
+
+        for (int i = 0; i < NumeroJugadores; i++)
+        {
+            jugadores[i] = jugador;
+        }
+        foreach (GameObject jugador in jugadores)
+        {
+            if (jugador != null)
+            {
+
+                if (jugadores[0]==jugador)
+                {
+                    GameObject.Instantiate(jugador, spawnJugador1.position, spawnJugador1.rotation);
+                } else
+                {
+                    GameObject.Instantiate(jugador, spawnJugador2.position, spawnJugador2.rotation);
+                }
+                
+            }
+            
+           
+        }
+
+    }
+	
+	
 	void Update () {
-		
-	}
+       
+    }
 }

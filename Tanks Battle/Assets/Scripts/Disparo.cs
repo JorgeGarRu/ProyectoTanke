@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Disparo : MonoBehaviour {
 
@@ -12,8 +13,11 @@ public class Disparo : MonoBehaviour {
     public float nextFire;
     public float rateFire;
 
+    public Transform Cañon;
+
     //audio
     public AudioClip sonidoDisparo;
+    public float volumen = 1f;
 
     public ParticleSystem particula;
     public ParticleSystem explosion;
@@ -21,6 +25,9 @@ public class Disparo : MonoBehaviour {
 
     //Vidas
     int contador = 3;
+
+    //CANVAS
+    public Canvas canva;
 
 
     void Start () {
@@ -30,18 +37,28 @@ public class Disparo : MonoBehaviour {
 	
 	void Update () {
 
-        
 
-        if (Input.GetKeyDown(KeyCode.Space) && nextFire<Time.time)
+        float inputFire = Input.GetAxis("Fire1");
+        if (inputFire!=0 && (nextFire<Time.time))
         {
             nextFire = Time.time + rateFire;
-            //GameObject cloneBala = GameObject.Instantiate(bala, spawnBala.position, spawnBala.rotation);
-            //Rigidbody rb = cloneBala.GetComponent<Rigidbody>();
             
-            //rb.velocity = -spawnBala.transform.up * fuerzaDisparo;
-            animator.SetBool("Retroceso", true);
+            if(Cañon.transform.rotation.z >= -90f || Cañon.transform.rotation.z <= 90f)
+            {
+                //animator.SetBool("RetrocesoInverso", false);
+                animator.SetBool("Retroceso", true);
+            } else
+            {
+                //animator.SetBool("Retroceso", false);
+                animator.SetBool("RetrocesoInverso", true);
+            }
+
+         
+           
+
+            
             particula.Play();
-            AudioSource.PlayClipAtPoint(sonidoDisparo, transform.position);
+            AudioSource.PlayClipAtPoint(sonidoDisparo, transform.position,volumen);
 
             Ray ray = new Ray(spawnBala.position, -spawnBala.transform.up);
             Debug.DrawRay(ray.origin, ray.direction * 100, Color.red);
@@ -52,7 +69,7 @@ public class Disparo : MonoBehaviour {
                  cloneExplosion = GameObject.Instantiate(explosion, pointHit, Quaternion.identity);
                 StartCoroutine(DestroyParticle());
 
-                if(hit.collider.gameObject.tag == "Jugador2")
+                if(hit.collider.gameObject.tag == "Jugador1")
                 {
                     contador--;
 
@@ -60,7 +77,11 @@ public class Disparo : MonoBehaviour {
                     {
                         Animator ani = hit.collider.gameObject.GetComponentInChildren<Animator>();
                         ani.SetBool("Muriendo", true);
+                       
                     }
+
+                    Image imagen = Canvas.FindObjectOfType<Image>();
+                    imagen.fillAmount -= 0.33f;
                     
                 }
             }
