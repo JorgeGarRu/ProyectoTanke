@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 8e638ea2a29406c4284e458937a653e4
+timeCreated: 1513866835
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Gross Brush
+  fontNames:
+  - Gross Brush
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -19,9 +19,16 @@ public class MovimientoJugador1 : MonoBehaviour
 
     public Transform Cañon;
 
+    //OVERLAP
+    Collider[] Suelo;
+    public bool enSuelo;
+    public Transform rueda;
+    public float radioRueda;
+    public LayerMask suelo;
+
     //ANIMATOR
     public Animator animator;
-
+    public float AnguloMaximo = 45;
 
     void Start()
     {
@@ -31,16 +38,32 @@ public class MovimientoJugador1 : MonoBehaviour
 
     void Update()
     {
-        inputZ = Input.GetAxis("Jugador1") * speedMovement;
-        rotation = Input.GetAxis("RotacionJugador1") * speedRotation;
-        rotationCañon = Input.GetAxis("Mouse X") * speedRotationCañon;
 
-        Vector3 movement = new Vector3(0, 0, inputZ);
-        Vector3 movementRotation = new Vector3(0, rotation, 0);
-        Vector3 movementRotationCañon = new Vector3(0, 0, rotationCañon);
-        transform.Translate(movement);
-        transform.Rotate(movementRotation);
-        Cañon.transform.Rotate(movementRotationCañon);
+        //if((transform.localRotation.eulerAngles.x >= (360 - AnguloMaximo) || transform.localRotation.eulerAngles.x <= AnguloMaximo) &&
+        //    (transform.localRotation.eulerAngles.z >= (360 - AnguloMaximo) || transform.localRotation.eulerAngles.z <= AnguloMaximo))
+        //{
+
+            inputZ = Input.GetAxis("Jugador1") * speedMovement;
+            rotation = Input.GetAxis("RotacionJugador1") * speedRotation;
+            rotationCañon = Input.GetAxis("Mouse X") * speedRotationCañon;
+
+            Vector3 movement = new Vector3(0, 0, inputZ);
+            Vector3 movementRotation = new Vector3(0, rotation, 0);
+            Vector3 movementRotationCañon = new Vector3(0, 0, rotationCañon);
+            transform.Translate(movement);
+            transform.Rotate(movementRotation);
+            Cañon.transform.Rotate(movementRotationCañon);
+
+
+        //}
+        //else
+        //{
+        //    if (Input.GetKey(KeyCode.R))
+        //    {
+        //        transform.rotation = Quaternion.Euler(0, transform.localRotation.eulerAngles.y, 0);
+        //    }
+        //}
+
 
         //ANDAR 
 
@@ -70,16 +93,36 @@ public class MovimientoJugador1 : MonoBehaviour
             }
         }
 
-        //BURLA
-        if (Input.GetKey(KeyCode.E))
+        //EN SUELO??
+        Suelo = Physics.OverlapSphere(rueda.position, radioRueda, suelo);
+        if (Suelo.Length == 0)
         {
-            animator.SetBool("Burla", true);
-        } else
-        {
-            animator.SetBool("Burla", false);
+            enSuelo = false;
         }
-        
-      
+        else
+        {
+            enSuelo = true;
+        }
+
+        if (!enSuelo)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                transform.rotation = Quaternion.Euler(0, transform.localRotation.eulerAngles.y, 0);
+            }
+        }
+
+
+        //BURLA
+        //if (Input.GetKey(KeyCode.E))
+        //{
+        //    animator.SetBool("Burla", true);
+        //} else
+        //{
+        //    animator.SetBool("Burla", false);
+        //}
+
+
     }
 }
     

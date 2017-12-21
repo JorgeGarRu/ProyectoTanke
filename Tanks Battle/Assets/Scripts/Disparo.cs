@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class Disparo : MonoBehaviour {
 
     public Transform spawnBala;
-    public GameObject bala;
-    public float fuerzaDisparo;
+    //public GameObject bala;
+    //public float fuerzaDisparo;
     Vector3 direccionDisparo;
     public Animator animator;
     public float nextFire;
@@ -29,6 +29,8 @@ public class Disparo : MonoBehaviour {
     //CANVAS
     public Canvas canva;
 
+    public float velocidadRebote;
+
 
     void Start () {
        
@@ -39,10 +41,12 @@ public class Disparo : MonoBehaviour {
 
 
         float inputFire = Input.GetAxis("Fire1");
-        if (inputFire!=0 && (nextFire<Time.time))
+        if (inputFire!=0 && (nextFire<Time.time)) //si disparo y el ratio de disparo es posible...
         {
-            nextFire = Time.time + rateFire;
+            nextFire = Time.time + rateFire; 
             
+            //RETROCESOS
+
             if(Cañon.transform.rotation.z >= -90f || Cañon.transform.rotation.z <= 90f)
             {
                 //animator.SetBool("RetrocesoInverso", false);
@@ -57,43 +61,58 @@ public class Disparo : MonoBehaviour {
            
 
             
-            particula.Play();
-            AudioSource.PlayClipAtPoint(sonidoDisparo, transform.position,volumen);
+            particula.Play(); //particula de disparo
+            AudioSource.PlayClipAtPoint(sonidoDisparo, transform.position,volumen); //sonido de disparo
 
+
+            //RAYCAST
             Ray ray = new Ray(spawnBala.position, -spawnBala.transform.up);
             Debug.DrawRay(ray.origin, ray.direction * 100, Color.red);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 1000))
             {
-                Vector3 pointHit = hit.point;
-                 cloneExplosion = GameObject.Instantiate(explosion, pointHit, Quaternion.identity);
-                StartCoroutine(DestroyParticle());
+                Vector3 pointHit = hit.point; //punto donde choca el raycast
+                 cloneExplosion = GameObject.Instantiate(explosion, pointHit, Quaternion.identity); //Efecto de explosion donde choca el raycast
+                StartCoroutine(DestroyParticle()); //Corutina para destruir el objeto explosion
 
-                if(hit.collider.gameObject.tag == "Jugador1")
+               
+                if(hit.collider.gameObject.tag == "Player")//si donde choca el raycast tiene la etiqueta "Player"...
                 {
-                    contador--;
+                    contador--; //contador de vida
 
-                    if (contador == 0)
+                    if (contador == 0) //cuando el contador llegue a 0...
                     {
-                        Animator ani = hit.collider.gameObject.GetComponentInChildren<Animator>();
-                        ani.SetBool("Muriendo", true);
+                        Animator ani = hit.collider.gameObject.GetComponentInChildren<Animator>(); //accedemos al animator del objeto donde choque el raycast
+                        ani.SetBool("Muriendo", true); //activamos la animacion de morir
                        
                     }
 
-                    Image imagen = Canvas.FindObjectOfType<Image>();
-                    imagen.fillAmount -= 0.33f;
+
+                    Muerte muerte = hit.collider.gameObject.GetComponent<Muerte>(); //accedemos al script "Muerte" del objeto donde choque el raycast
+                    muerte.quitarVida(); //llamamos al metodo de quitarle vida
                     
+                    
+                }
+
+                if (hit.collider.gameObject.tag == "Farolas")//si donde choca el raycast tiene la etiqueta "Farolas"...
+                {
+                    Vector3 direccion = pointHit - Cañon.transform.position; //sacamos la direccion de disparo
+                    Rigidbody rb = hit.collider.gameObject.GetComponent<Rigidbody>(); //accedemos al rigidbody de las farolas
+                    rb.AddForce(direccion * velocidadRebote); // y le aplicamos una fuerza
                 }
             }
 
-        }
-        else
+        } 
+        else //si no disparamos...
         {
-            animator.SetBool("Retroceso", false);
+            animator.SetBool("Retroceso", false); 
         }
 	}
 
-    IEnumerator DestroyParticle()
+   
+
+
+    IEnumerator DestroyParticle() //corutina para destruir las explosiones.
     {
         yield return new WaitForSeconds(0.5f);
         Destroy(cloneExplosion.gameObject);
