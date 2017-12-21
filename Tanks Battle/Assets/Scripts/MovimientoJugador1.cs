@@ -56,7 +56,7 @@ public class MovimientoJugador1 : MonoBehaviour
 
         //SONIDO MOVIMIENTO
 
-        if (sonidoMovimiento.clip)
+        if (sonidoMovimiento)
         {
             if (inputZ != 0 || rotation != 0)
             {
